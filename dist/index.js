@@ -12,7 +12,7 @@ import require$$0$3 from 'util';
 import require$$0$5, { Readable } from 'stream';
 import require$$7 from 'buffer';
 import require$$8 from 'querystring';
-import require$$14 from 'stream/web';
+import require$$13 from 'stream/web';
 import require$$0$8 from 'node:stream';
 import require$$1$3 from 'node:util';
 import require$$0$7, { EventEmitter } from 'node:events';
@@ -1495,7 +1495,7 @@ function requireUtil$7 () {
 	let ReadableStream;
 	function ReadableStreamFrom (iterable) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  if (ReadableStream.from) {
@@ -4552,7 +4552,7 @@ function requireUtil$6 () {
 
 	function isReadableStreamLike (stream) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  return stream instanceof ReadableStream || (
@@ -6692,14 +6692,6 @@ function requireBody () {
 	const { File: UndiciFile } = requireFile();
 	const { parseMIMEType, serializeAMimeType } = requireDataURL();
 
-	let random;
-	try {
-	  const crypto = require('node:crypto');
-	  random = (max) => crypto.randomInt(0, max);
-	} catch {
-	  random = (max) => Math.floor(Math.random(max));
-	}
-
 	let ReadableStream = globalThis.ReadableStream;
 
 	/** @type {globalThis['File']} */
@@ -6710,7 +6702,7 @@ function requireBody () {
 	// https://fetch.spec.whatwg.org/#concept-bodyinit-extract
 	function extractBody (object, keepalive = false) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  // 1. Let stream be null.
@@ -6785,7 +6777,7 @@ function requireBody () {
 	    // Set source to a copy of the bytes held by object.
 	    source = new Uint8Array(object.buffer.slice(object.byteOffset, object.byteOffset + object.byteLength));
 	  } else if (util.isFormDataLike(object)) {
-	    const boundary = `----formdata-undici-0${`${random(1e11)}`.padStart(11, '0')}`;
+	    const boundary = `----formdata-undici-0${`${Math.floor(Math.random() * 1e11)}`.padStart(11, '0')}`;
 	    const prefix = `--${boundary}\r\nContent-Disposition: form-data`;
 
 	    /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
@@ -6931,7 +6923,7 @@ function requireBody () {
 	function safelyExtractBody (object, keepalive = false) {
 	  if (!ReadableStream) {
 	    // istanbul ignore next
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  // To safely extract a body and a `Content-Type` value from
@@ -11519,20 +11511,6 @@ function requirePool () {
 	      ? { ...options.interceptors }
 	      : undefined;
 	    this[kFactory] = factory;
-
-	    this.on('connectionError', (origin, targets, error) => {
-	      // If a connection error occurs, we remove the client from the pool,
-	      // and emit a connectionError event. They will not be re-used.
-	      // Fixes https://github.com/nodejs/undici/issues/3895
-	      for (const target of targets) {
-	        // Do not use kRemoveClient here, as it will close the client,
-	        // but the client cannot be closed in this state.
-	        const idx = this[kClients].indexOf(target);
-	        if (idx !== -1) {
-	          this[kClients].splice(idx, 1);
-	        }
-	      }
-	    });
 	  }
 
 	  [kGetDispatcher] () {
@@ -14994,7 +14972,6 @@ function requireHeaders () {
 	  isValidHeaderName,
 	  isValidHeaderValue
 	} = requireUtil$6();
-	const util = require$$0$3;
 	const { webidl } = requireWebidl();
 	const assert = require$$0$4;
 
@@ -15541,9 +15518,6 @@ function requireHeaders () {
 	  [Symbol.toStringTag]: {
 	    value: 'Headers',
 	    configurable: true
-	  },
-	  [util.inspect.custom]: {
-	    enumerable: false
 	  }
 	});
 
@@ -15605,7 +15579,7 @@ function requireResponse () {
 	const assert = require$$0$4;
 	const { types } = require$$0$3;
 
-	const ReadableStream = globalThis.ReadableStream || require$$14.ReadableStream;
+	const ReadableStream = globalThis.ReadableStream || require$$13.ReadableStream;
 	const textEncoder = new TextEncoder('utf-8');
 
 	// https://fetch.spec.whatwg.org/#response-class
@@ -16674,7 +16648,7 @@ function requireRequest () {
 
 	      // 2. Set finalBody to the result of creating a proxy for inputBody.
 	      if (!TransformStream) {
-	        TransformStream = require$$14.TransformStream;
+	        TransformStream = require$$13.TransformStream;
 	      }
 
 	      // https://streams.spec.whatwg.org/#readablestream-create-a-proxy
@@ -17167,7 +17141,7 @@ function requireFetch () {
 	const { Readable, pipeline } = require$$0$5;
 	const { addAbortListener, isErrored, isReadable, nodeMajor, nodeMinor } = requireUtil$7();
 	const { dataURLProcessor, serializeAMimeType } = requireDataURL();
-	const { TransformStream } = require$$14;
+	const { TransformStream } = require$$13;
 	const { getGlobalDispatcher } = requireGlobal();
 	const { webidl } = requireWebidl();
 	const { STATUS_CODES } = require$$2;
@@ -18837,7 +18811,7 @@ function requireFetch () {
 	  // cancelAlgorithm set to cancelAlgorithm, highWaterMark set to
 	  // highWaterMark, and sizeAlgorithm set to sizeAlgorithm.
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  const stream = new ReadableStream(
@@ -21433,10 +21407,9 @@ function requireUtil$2 () {
 	if (hasRequiredUtil$2) return util$2;
 	hasRequiredUtil$2 = 1;
 
-	/**
-	 * @param {string} value
-	 * @returns {boolean}
-	 */
+	const assert = require$$0$4;
+	const { kHeadersList } = requireSymbols$4();
+
 	function isCTLExcludingHtab (value) {
 	  if (value.length === 0) {
 	    return false
@@ -21697,13 +21670,31 @@ function requireUtil$2 () {
 	  return out.join('; ')
 	}
 
+	let kHeadersListNode;
+
+	function getHeadersList (headers) {
+	  if (headers[kHeadersList]) {
+	    return headers[kHeadersList]
+	  }
+
+	  if (!kHeadersListNode) {
+	    kHeadersListNode = Object.getOwnPropertySymbols(headers).find(
+	      (symbol) => symbol.description === 'headers list'
+	    );
+
+	    assert(kHeadersListNode, 'Headers cannot be parsed');
+	  }
+
+	  const headersList = headers[kHeadersListNode];
+	  assert(headersList);
+
+	  return headersList
+	}
+
 	util$2 = {
 	  isCTLExcludingHtab,
-	  validateCookieName,
-	  validateCookiePath,
-	  validateCookieValue,
-	  toIMFDate,
-	  stringify
+	  stringify,
+	  getHeadersList
 	};
 	return util$2;
 }
@@ -22041,7 +22032,7 @@ function requireCookies () {
 	hasRequiredCookies = 1;
 
 	const { parseSetCookie } = requireParse();
-	const { stringify } = requireUtil$2();
+	const { stringify, getHeadersList } = requireUtil$2();
 	const { webidl } = requireWebidl();
 	const { Headers } = requireHeaders();
 
@@ -22117,13 +22108,14 @@ function requireCookies () {
 
 	  webidl.brandCheck(headers, Headers, { strict: false });
 
-	  const cookies = headers.getSetCookie();
+	  const cookies = getHeadersList(headers).cookies;
 
 	  if (!cookies) {
 	    return []
 	  }
 
-	  return cookies.map((pair) => parseSetCookie(pair))
+	  // In older versions of undici, cookies is a list of name:value.
+	  return cookies.map((pair) => parseSetCookie(Array.isArray(pair) ? pair[1] : pair))
 	}
 
 	/**
@@ -111657,7 +111649,7 @@ class RealtimeClient {
                 this.conn = null;
             },
         });
-        import('./wrapper-x8r6BsWe.js').then(({ default: WS }) => {
+        import('./wrapper-b7p8CAWp.js').then(({ default: WS }) => {
             this.conn = new WS(this.endpointURL(), undefined, {
                 headers: this.headers,
             });
@@ -116590,11 +116582,8 @@ async function createRegressionTestRun(token, regression_test_id) {
     return resp;
 }
 
-<<<<<<< HEAD
 var ioExports = requireIo();
 
-=======
->>>>>>> 65ae462 (dist)
 const ALIAS = Symbol.for('yaml.alias');
 const DOC = Symbol.for('yaml.document');
 const MAP = Symbol.for('yaml.map');
@@ -124027,11 +124016,6 @@ var YAML = /*#__PURE__*/Object.freeze({
 	visitAsync: visitAsync
 });
 
-<<<<<<< HEAD
-=======
-var ioExports = requireIo();
-
->>>>>>> 65ae462 (dist)
 var glob$1 = {};
 
 var internalGlobber = {};
@@ -138738,7 +138722,6 @@ function isMutationTestUnit(unit) {
 // Type guard to check if a unit is a regular test unit
 function isRegularTestUnit(unit) {
     return 'tests' in unit && 'testCount' in unit;
-<<<<<<< HEAD
 }
 
 class Logger {
@@ -138818,8 +138801,6 @@ class Grader {
             console.log(`Autograder configuration: ${JSON.stringify(this.config, null, 2)}`);
         }
     }
-=======
->>>>>>> 65ae462 (dist)
 }
 
 function icon(result) {
@@ -138830,26 +138811,18 @@ function icon(result) {
         return '❌';
     }
 }
-<<<<<<< HEAD
 class OverlayGrader extends Grader {
     gradingDir;
     builder;
     constructor(solutionDir, submissionDir, config, gradingDir, regressionTestJob) {
         super(solutionDir, submissionDir, config, regressionTestJob);
         this.gradingDir = gradingDir;
-=======
-class JavaGrader extends Grader {
-    builder;
-    constructor(solutionDir, submissionDir, config, gradingDir, regressionTestJob) {
-        super(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
->>>>>>> 65ae462 (dist)
         if (this.config.build.preset == 'java-gradle') {
             this.builder = new GradleBuilder(this.logger, this.gradingDir, this.regressionTestJob);
         }
         else if (this.config.build.preset == 'none') {
             this.builder = undefined;
         }
-<<<<<<< HEAD
         else {
             throw new Error(`Unsupported build preset: ${this.config.build.preset}`);
         }
@@ -138875,8 +138848,6 @@ class JavaGrader extends Grader {
             await ioExports.mkdirP(dir);
             await ioExports.cp(file, dest, { recursive: true });
         }
-=======
->>>>>>> 65ae462 (dist)
     }
     async resetSolutionFiles() {
         const files = this.config.submissionFiles['files'].concat(this.config.submissionFiles['testFiles']);
@@ -139337,7 +139308,6 @@ class JavaGrader extends Grader {
     }
 }
 
-<<<<<<< HEAD
 async function makeGrader(config, solutionDir, submissionDir, regressionTestJob) {
     switch (config.grader) {
         case 'overlay': {
@@ -139353,125 +139323,6 @@ async function grade(solutionDir, submissionDir, regressionTestJob) {
     const _config = await readFile(path$1.join(solutionDir, 'pawtograder.yml'), 'utf8');
     const config = YAML.parse(_config);
     const grader = await makeGrader(config, solutionDir, submissionDir, regressionTestJob);
-=======
-class Logger {
-    regressionTestJob;
-    output = [];
-    constructor(regressionTestJob) {
-        this.regressionTestJob = regressionTestJob;
-    }
-    log(visibility, message) {
-        if (visibility === 'visible') {
-            console.log(message);
-        }
-        else if (this.regressionTestJob) {
-            console.log(`CIDebug: ${message}`);
-        }
-        this.output.push({
-            output: message,
-            visibility: visibility
-        });
-    }
-    hasOutput(visibility) {
-        return this.output.some((o) => o.visibility === visibility);
-    }
-    getEachOutput() {
-        const ret = {};
-        for (const visibility of [
-            'visible',
-            'hidden',
-            'after_due_date',
-            'after_published'
-        ]) {
-            if (this.hasOutput(visibility)) {
-                ret[visibility] = {
-                    output: this.getOutput(visibility),
-                    output_format: 'text'
-                };
-            }
-        }
-        return ret;
-    }
-    getOutput(visibility) {
-        const includeLine = (v) => {
-            if (visibility === 'visible') {
-                return v === 'visible';
-            }
-            if (visibility === 'hidden') {
-                return true;
-            }
-            if (visibility === 'after_due_date') {
-                return v === 'visible' || v === 'after_due_date';
-            }
-            if (visibility === 'after_published') {
-                return (v === 'visible' || v === 'after_published' || v === 'after_due_date');
-            }
-            return false;
-        };
-        return this.output
-            .filter((o) => includeLine(o.visibility))
-            .map((o) => o.output)
-            .join('\n');
-    }
-}
-
-class Grader {
-    solutionDir;
-    submissionDir;
-    config;
-    gradingDir;
-    regressionTestJob;
-    logger;
-    constructor(solutionDir, submissionDir, config, gradingDir, regressionTestJob) {
-        this.solutionDir = solutionDir;
-        this.submissionDir = submissionDir;
-        this.config = config;
-        this.gradingDir = gradingDir;
-        this.regressionTestJob = regressionTestJob;
-        this.logger = new Logger(regressionTestJob);
-        if (regressionTestJob) {
-            console.log(`Autograder configuration: ${JSON.stringify(this.config, null, 2)}`);
-        }
-    }
-    async copyStudentFiles(whichFiles) {
-        const files = this.config.submissionFiles[whichFiles];
-        // Delete any files that match the glob patterns in the solution directory, so that students can overwrite/replace them
-        const solutionGlobber = await globExports.create(files.map((f) => path$1.join(this.gradingDir, f)).join('\n'));
-        const expandedSolutionFiles = await solutionGlobber.glob();
-        await Promise.all(expandedSolutionFiles.map(async (file) => {
-            await ioExports.rmRF(file);
-        }));
-        // Expand glob patterns
-        const globber = await globExports.create(files.map((f) => path$1.join(this.submissionDir, f)).join('\n'));
-        const expandedFiles = await globber.glob();
-        // Remove any files that are a prefix of another file, so that we only copy the directory contents once
-        const filesWithoutDirContents = expandedFiles.filter((file) => !expandedFiles.some((f) => f.startsWith(file) && f !== file));
-        for (const file of filesWithoutDirContents) {
-            const relativePath = path$1.relative(this.submissionDir, file);
-            const dest = path$1.join(this.gradingDir, relativePath);
-            // Make sure that the directory exists before copying the file
-            const dir = path$1.dirname(dest);
-            await ioExports.mkdirP(dir);
-            await ioExports.cp(file, dest, { recursive: true });
-        }
-    }
-    static fromPreset(solutionDir, submissionDir, config, gradingDir, regressionTestJob) {
-        switch (config.grader) {
-            case 'java':
-                return new JavaGrader(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
-            default:
-                throw new Error(`Unsupported grader: ${config.grader}`);
-        }
-    }
-}
-
-async function grade(solutionDir, submissionDir, regressionTestJob) {
-    const _config = await readFile(path$1.join(solutionDir, 'pawtograder.yml'), 'utf8');
-    const config = YAML.parse(_config);
-    const gradingDir = path$1.join(process.cwd(), 'pawtograder-grading');
-    await ioExports.mkdirP(gradingDir);
-    const grader = Grader.fromPreset(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
->>>>>>> 65ae462 (dist)
     const ret = await grader.grade();
     return ret;
 }

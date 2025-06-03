@@ -1,6 +1,7 @@
 import { spawn } from 'child_process'
 import { AutograderFeedback } from '../../api/adminServiceSchemas.js'
 import { Grader } from './Grader.js'
+import { readdir } from 'fs/promises'
 import { PyretPawtograderConfig } from '../types.js'
 
 export class PyretGrader extends Grader<PyretPawtograderConfig> {
@@ -17,10 +18,22 @@ export class PyretGrader extends Grader<PyretPawtograderConfig> {
     // TODO: provide grading & submission dirs
     const inputJson = JSON.stringify(this.config)
 
+    console.log(await readdir('.'))
     return new Promise((resolve, reject) => {
+      console.log(process.cwd())
+
       // FIXME: pyret path, double check pwd, args, etc
-      const grader = spawn('npx', [
-        'pyret',
+      // const grader = spawn('npx', [
+      //   'pyret',
+      //   '--builtin-js-dir',
+      //   'node_modules/pyret-autograder/pyret/src/js/trove/',
+      //   '-p',
+      //   'pyret/grader.arr',
+      //   '-o',
+      //   'pyret/grader.cjs',
+      //   '-q' // this is important
+      // ])
+      const grader = spawn('./node_modules/.bin/pyret', [
         '--builtin-js-dir',
         'node_modules/pyret-autograder/pyret/src/js/trove/',
         '-p',
