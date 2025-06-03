@@ -1,5 +1,5 @@
 import * as io from '@actions/io'
-import { readFile } from 'fs/promises'
+import { readdir, readFile } from 'fs/promises'
 import path from 'path'
 import yaml from 'yaml'
 import { AutograderFeedback } from '../api/adminServiceSchemas.js'
@@ -34,6 +34,12 @@ export default async function grade(
   submissionDir: string,
   regressionTestJob?: number
 ): Promise<AutograderFeedback> {
+  console.log(process.cwd())
+  console.log(await readdir('.'))
+  console.log(solutionDir)
+  console.log(path.join(solutionDir, 'pawtograder.yml'))
+  console.log(await readdir(solutionDir))
+
   const _config = await readFile(
     path.join(solutionDir, 'pawtograder.yml'),
     'utf8'
