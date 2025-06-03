@@ -32,11 +32,12 @@ export class PyretGrader extends Grader<PyretPawtograderConfig> {
       const grader = spawn('./node_modules/.bin/pyret', [
         '--builtin-js-dir',
         'node_modules/pyret-autograder/pyret/src/js/trove/',
-        '-p',
+        '--program',
         'pyret/grader.arr',
-        '-o',
+        '--outfile',
         'pyret/grader.cjs',
-        '-q' // this is important
+        '--quiet',
+        '--no-check-mode'
       ])
       let output = ''
       let error = ''
@@ -53,7 +54,7 @@ export class PyretGrader extends Grader<PyretPawtograderConfig> {
         try {
           resolve(JSON.parse(output))
         } catch (e) {
-          reject(new Error(`Invalid JSON from grader: ${output}`))
+          reject(new Error(`Invalid JSON from grader: ${output}\n${e}`))
         }
       })
 
