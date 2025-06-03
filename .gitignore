@@ -100,3 +100,9 @@ __tests__/runner/*
 # IDE files
 .idea
 *.code-workspace
+
+# Pyret
+.pyret
+
+pyret/*.jarr
+pyret/*.cjs
