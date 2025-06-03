@@ -36,7 +36,7 @@
     "package:watch": "npm run package -- --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1 npx jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package",
-    "postinstall": "cd node_modules/pyret-autograder; npm install --install-strategy=nested || true; ln -s ./node_modules/pyret-lang ./pyret; ln -s ./node_modules/pyret-npm ./pyret-npm; ln -s ../node_modules/pyret-lang ./poc/pyret; ln -s ../node_modules/pyret-npm ./poc/pyret-npm"
+    "postinstall": "cd node_modules/pyret-autograder; npm install --install-strategy=nested || true; ln -s ./node_modules/pyret-lang ./pyret; ln -s ./node_modules/pyret-npm ./pyret-npm; ln -s ../node_modules/pyret-lang ./poc/pyret; ln -s ../node_modules/pyret-npm ./poc/pyret-npm; ln -s node_modules/pyret-npm pyret-npm"
   },
   "license": "MIT",
   "dependencies": {
