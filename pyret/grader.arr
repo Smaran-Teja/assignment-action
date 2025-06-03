@@ -34,6 +34,5 @@ graders =
 result = grade(graders)
 output = prepare-for-pawtograder(result)
 
-print(to-repr(output) + "\n")
 print(output.serialize() + "\n")
 
