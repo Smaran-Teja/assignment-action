@@ -72,7 +72,8 @@ export interface GradedPart {
 }
 
 // Main configuration type
-export interface PawtograderConfig {
+export interface GradlePawtograderConfig {
+  grader: 'gradle'
   build: BuildConfig
   gradedParts?: GradedPart[]
   submissionFiles: {
@@ -86,6 +87,8 @@ export interface PawtograderConfig {
     prompt: string
   }[]
 }
+
+export type PawtograderConfig = GradlePawtograderConfig
 
 // Type guard to check if a unit is a mutation test unit
 export function isMutationTestUnit(unit: GradedUnit): unit is MutationTestUnit {
