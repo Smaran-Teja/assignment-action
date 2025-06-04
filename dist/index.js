@@ -12,7 +12,7 @@ import require$$0$3 from 'util';
 import require$$0$5, { Readable } from 'stream';
 import require$$7 from 'buffer';
 import require$$8 from 'querystring';
-import require$$14 from 'stream/web';
+import require$$13 from 'stream/web';
 import require$$0$8 from 'node:stream';
 import require$$1$3 from 'node:util';
 import require$$0$7, { EventEmitter } from 'node:events';
@@ -1495,7 +1495,7 @@ function requireUtil$7 () {
 	let ReadableStream;
 	function ReadableStreamFrom (iterable) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  if (ReadableStream.from) {
@@ -4552,7 +4552,7 @@ function requireUtil$6 () {
 
 	function isReadableStreamLike (stream) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  return stream instanceof ReadableStream || (
@@ -6692,14 +6692,6 @@ function requireBody () {
 	const { File: UndiciFile } = requireFile();
 	const { parseMIMEType, serializeAMimeType } = requireDataURL();
 
-	let random;
-	try {
-	  const crypto = require('node:crypto');
-	  random = (max) => crypto.randomInt(0, max);
-	} catch {
-	  random = (max) => Math.floor(Math.random(max));
-	}
-
 	let ReadableStream = globalThis.ReadableStream;
 
 	/** @type {globalThis['File']} */
@@ -6710,7 +6702,7 @@ function requireBody () {
 	// https://fetch.spec.whatwg.org/#concept-bodyinit-extract
 	function extractBody (object, keepalive = false) {
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  // 1. Let stream be null.
@@ -6785,7 +6777,7 @@ function requireBody () {
 	    // Set source to a copy of the bytes held by object.
 	    source = new Uint8Array(object.buffer.slice(object.byteOffset, object.byteOffset + object.byteLength));
 	  } else if (util.isFormDataLike(object)) {
-	    const boundary = `----formdata-undici-0${`${random(1e11)}`.padStart(11, '0')}`;
+	    const boundary = `----formdata-undici-0${`${Math.floor(Math.random() * 1e11)}`.padStart(11, '0')}`;
 	    const prefix = `--${boundary}\r\nContent-Disposition: form-data`;
 
 	    /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
@@ -6931,7 +6923,7 @@ function requireBody () {
 	function safelyExtractBody (object, keepalive = false) {
 	  if (!ReadableStream) {
 	    // istanbul ignore next
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  // To safely extract a body and a `Content-Type` value from
@@ -11519,20 +11511,6 @@ function requirePool () {
 	      ? { ...options.interceptors }
 	      : undefined;
 	    this[kFactory] = factory;
-
-	    this.on('connectionError', (origin, targets, error) => {
-	      // If a connection error occurs, we remove the client from the pool,
-	      // and emit a connectionError event. They will not be re-used.
-	      // Fixes https://github.com/nodejs/undici/issues/3895
-	      for (const target of targets) {
-	        // Do not use kRemoveClient here, as it will close the client,
-	        // but the client cannot be closed in this state.
-	        const idx = this[kClients].indexOf(target);
-	        if (idx !== -1) {
-	          this[kClients].splice(idx, 1);
-	        }
-	      }
-	    });
 	  }
 
 	  [kGetDispatcher] () {
@@ -14994,7 +14972,6 @@ function requireHeaders () {
 	  isValidHeaderName,
 	  isValidHeaderValue
 	} = requireUtil$6();
-	const util = require$$0$3;
 	const { webidl } = requireWebidl();
 	const assert = require$$0$4;
 
@@ -15541,9 +15518,6 @@ function requireHeaders () {
 	  [Symbol.toStringTag]: {
 	    value: 'Headers',
 	    configurable: true
-	  },
-	  [util.inspect.custom]: {
-	    enumerable: false
 	  }
 	});
 
@@ -15605,7 +15579,7 @@ function requireResponse () {
 	const assert = require$$0$4;
 	const { types } = require$$0$3;
 
-	const ReadableStream = globalThis.ReadableStream || require$$14.ReadableStream;
+	const ReadableStream = globalThis.ReadableStream || require$$13.ReadableStream;
 	const textEncoder = new TextEncoder('utf-8');
 
 	// https://fetch.spec.whatwg.org/#response-class
@@ -16674,7 +16648,7 @@ function requireRequest () {
 
 	      // 2. Set finalBody to the result of creating a proxy for inputBody.
 	      if (!TransformStream) {
-	        TransformStream = require$$14.TransformStream;
+	        TransformStream = require$$13.TransformStream;
 	      }
 
 	      // https://streams.spec.whatwg.org/#readablestream-create-a-proxy
@@ -17167,7 +17141,7 @@ function requireFetch () {
 	const { Readable, pipeline } = require$$0$5;
 	const { addAbortListener, isErrored, isReadable, nodeMajor, nodeMinor } = requireUtil$7();
 	const { dataURLProcessor, serializeAMimeType } = requireDataURL();
-	const { TransformStream } = require$$14;
+	const { TransformStream } = require$$13;
 	const { getGlobalDispatcher } = requireGlobal();
 	const { webidl } = requireWebidl();
 	const { STATUS_CODES } = require$$2;
@@ -18837,7 +18811,7 @@ function requireFetch () {
 	  // cancelAlgorithm set to cancelAlgorithm, highWaterMark set to
 	  // highWaterMark, and sizeAlgorithm set to sizeAlgorithm.
 	  if (!ReadableStream) {
-	    ReadableStream = require$$14.ReadableStream;
+	    ReadableStream = require$$13.ReadableStream;
 	  }
 
 	  const stream = new ReadableStream(
@@ -21433,10 +21407,9 @@ function requireUtil$2 () {
 	if (hasRequiredUtil$2) return util$2;
 	hasRequiredUtil$2 = 1;
 
-	/**
-	 * @param {string} value
-	 * @returns {boolean}
-	 */
+	const assert = require$$0$4;
+	const { kHeadersList } = requireSymbols$4();
+
 	function isCTLExcludingHtab (value) {
 	  if (value.length === 0) {
 	    return false
@@ -21697,13 +21670,31 @@ function requireUtil$2 () {
 	  return out.join('; ')
 	}
 
+	let kHeadersListNode;
+
+	function getHeadersList (headers) {
+	  if (headers[kHeadersList]) {
+	    return headers[kHeadersList]
+	  }
+
+	  if (!kHeadersListNode) {
+	    kHeadersListNode = Object.getOwnPropertySymbols(headers).find(
+	      (symbol) => symbol.description === 'headers list'
+	    );
+
+	    assert(kHeadersListNode, 'Headers cannot be parsed');
+	  }
+
+	  const headersList = headers[kHeadersListNode];
+	  assert(headersList);
+
+	  return headersList
+	}
+
 	util$2 = {
 	  isCTLExcludingHtab,
-	  validateCookieName,
-	  validateCookiePath,
-	  validateCookieValue,
-	  toIMFDate,
-	  stringify
+	  stringify,
+	  getHeadersList
 	};
 	return util$2;
 }
@@ -22041,7 +22032,7 @@ function requireCookies () {
 	hasRequiredCookies = 1;
 
 	const { parseSetCookie } = requireParse();
-	const { stringify } = requireUtil$2();
+	const { stringify, getHeadersList } = requireUtil$2();
 	const { webidl } = requireWebidl();
 	const { Headers } = requireHeaders();
 
@@ -22117,13 +22108,14 @@ function requireCookies () {
 
 	  webidl.brandCheck(headers, Headers, { strict: false });
 
-	  const cookies = headers.getSetCookie();
+	  const cookies = getHeadersList(headers).cookies;
 
 	  if (!cookies) {
 	    return []
 	  }
 
-	  return cookies.map((pair) => parseSetCookie(pair))
+	  // In older versions of undici, cookies is a list of name:value.
+	  return cookies.map((pair) => parseSetCookie(Array.isArray(pair) ? pair[1] : pair))
 	}
 
 	/**
@@ -111657,7 +111649,7 @@ class RealtimeClient {
                 this.conn = null;
             },
         });
-        import('./wrapper-x8r6BsWe.js').then(({ default: WS }) => {
+        import('./wrapper-b7p8CAWp.js').then(({ default: WS }) => {
             this.conn = new WS(this.endpointURL(), undefined, {
                 headers: this.headers,
             });
