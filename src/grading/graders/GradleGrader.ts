@@ -3,9 +3,9 @@ import * as glob from '@actions/glob'
 import { readdir, readFile, access } from 'fs/promises'
 import path from 'path'
 import yaml from 'yaml'
-import { Builder, MutantResult, TestResult } from './builder/Builder.js'
-import GradleBuilder from './builder/GradleBuilder.js'
-import Logger from './Logger.js'
+import { Builder, MutantResult, TestResult } from '../builders/Builder.js'
+import GradleBuilder from '../builders/GradleBuilder.js'
+import Logger from '../Logger.js'
 import {
   AutograderTestFeedback,
   DEFAULT_TIMEOUTS,
@@ -15,8 +15,8 @@ import {
   isRegularTestUnit,
   OutputFormat,
   PawtograderConfig
-} from './types.js'
-import { AutograderFeedback } from '../api/adminServiceSchemas.js'
+} from '../types.js'
+import { AutograderFeedback } from '../../api/adminServiceSchemas.js'
 export default async function grade(
   solutionDir: string,
   submissionDir: string,
