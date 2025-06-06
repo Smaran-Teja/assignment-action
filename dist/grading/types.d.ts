@@ -58,8 +58,8 @@ export interface GradedPart {
     gradedUnits: GradedUnit[];
     hide_until_released?: boolean;
 }
-export interface GradlePawtograderConfig {
-    grader: 'gradle';
+export interface OverlayPawtograderConfig {
+    grader: 'overlay';
     build: BuildConfig;
     gradedParts?: GradedPart[];
     submissionFiles: {
@@ -73,7 +73,7 @@ export interface GradlePawtograderConfig {
         prompt: string;
     }[];
 }
-export type PawtograderConfig = GradlePawtograderConfig;
+export type PawtograderConfig = OverlayPawtograderConfig;
 export declare function isMutationTestUnit(unit: GradedUnit): unit is MutationTestUnit;
 export declare function isRegularTestUnit(unit: GradedUnit): unit is RegularTestUnit;
 export type OutputFormat = 'text' | 'ansi' | 'markdown';

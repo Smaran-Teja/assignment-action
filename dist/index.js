@@ -138811,7 +138811,7 @@ function icon(result) {
         return '❌';
     }
 }
-class GradleGrader extends Grader {
+class OverlayGrader extends Grader {
     gradingDir;
     builder;
     constructor(solutionDir, submissionDir, config, gradingDir, regressionTestJob) {
@@ -139310,10 +139310,10 @@ class GradleGrader extends Grader {
 
 async function makeGrader(config, solutionDir, submissionDir, regressionTestJob) {
     switch (config.grader) {
-        case 'gradle': {
+        case 'overlay': {
             const gradingDir = path$1.join(process.cwd(), 'pawtograder-grading');
             await ioExports.mkdirP(gradingDir);
-            return new GradleGrader(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
+            return new OverlayGrader(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
         }
         default:
             throw new Error(`Unknown grader ${config.grader}`);
