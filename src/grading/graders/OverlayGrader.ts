@@ -10,7 +10,7 @@ import {
   DEFAULT_TIMEOUTS,
   GradedPart,
   GradedUnit,
-  GradlePawtograderConfig,
+  OverlayPawtograderConfig,
   isMutationTestUnit,
   isRegularTestUnit,
   OutputFormat,
@@ -26,7 +26,7 @@ function icon(result: TestResult) {
   }
 }
 
-export class GradleGrader extends Grader<GradlePawtograderConfig> {
+export class OverlayGrader extends Grader<OverlayPawtograderConfig> {
   private builder: Builder | undefined
 
   constructor(

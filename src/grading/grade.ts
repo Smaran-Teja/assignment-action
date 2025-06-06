@@ -4,7 +4,7 @@ import path from 'path'
 import yaml from 'yaml'
 import { AutograderFeedback } from '../api/adminServiceSchemas.js'
 import { PawtograderConfig } from './types.js'
-import { GradleGrader } from './graders/GradleGrader.js'
+import { OverlayGrader } from './graders/OverlayGrader.js'
 
 export async function makeGrader(
   config: PawtograderConfig,
@@ -13,10 +13,10 @@ export async function makeGrader(
   regressionTestJob?: number
 ) {
   switch (config.grader) {
-    case 'gradle': {
+    case 'overlay': {
       const gradingDir = path.join(process.cwd(), 'pawtograder-grading')
       await io.mkdirP(gradingDir)
-      return new GradleGrader(
+      return new OverlayGrader(
         solutionDir,
         submissionDir,
         config,
