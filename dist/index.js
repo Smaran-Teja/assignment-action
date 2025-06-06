@@ -116579,7 +116579,6 @@ async function createSubmission(token) {
     if (resp.error) {
         throw new Error(`Failed to create submission: ${resp.error.message} ${resp.error.details}`);
     }
-    console.dir(resp);
     return resp;
 }
 async function createRegressionTestRun(token, regression_test_id) {
@@ -139327,6 +139326,48 @@ class OverlayGrader extends Grader {
     }
 }
 
+class PyretGrader extends Grader {
+    constructor(solutionDir, submissionDir, config, regressionTestJob) {
+        super(solutionDir, submissionDir, config, regressionTestJob);
+    }
+    async grade() {
+        // TODO: provide grading & submission dirs
+        const inputJson = JSON.stringify(this.config);
+        return new Promise((resolve, reject) => {
+            const grader = spawn('npx', [
+                'pyret',
+                '--builtin-js-dir',
+                'node_modules/pyret-autograder/pyret/src/js/trove/',
+                '--program',
+                'pyret/grader.arr',
+                '--outfile',
+                'pyret/grader.cjs',
+                '--quiet',
+                '--no-check-mode'
+            ]);
+            let output = '';
+            let error = '';
+            console.log('pyret child spawned');
+            grader.stdout.on('data', (data) => (output += data.toString()));
+            grader.stderr.on('data', (data) => (error += data.toString()));
+            grader.on('close', (code) => {
+                console.log('pyret child closed');
+                if (code !== 0) {
+                    return reject(new Error(`Grader failed: ${error}`));
+                }
+                try {
+                    resolve(JSON.parse(output));
+                }
+                catch (e) {
+                    reject(new Error(`Invalid JSON from grader: ${output}\n${e}`));
+                }
+            });
+            grader.stdin.write(JSON.stringify(inputJson));
+            grader.stdin.end();
+        });
+    }
+}
+
 async function makeGrader(config, solutionDir, submissionDir, regressionTestJob) {
     switch (config.grader) {
         case 'overlay': {
@@ -139334,16 +139375,14 @@ async function makeGrader(config, solutionDir, submissionDir, regressionTestJob)
             await ioExports.mkdirP(gradingDir);
             return new OverlayGrader(solutionDir, submissionDir, config, gradingDir, regressionTestJob);
         }
-        default:
+        case 'pyret':
+            return new PyretGrader(solutionDir, submissionDir, config, regressionTestJob);
+        default: {
             throw new Error(`Unknown grader ${config.grader}`);
+        }
     }
 }
 async function grade(solutionDir, submissionDir, regressionTestJob) {
-    console.log(process.cwd());
-    console.log(await readdir$2('.'));
-    console.log(solutionDir);
-    console.log(path$1.join(solutionDir, 'pawtograder.yml'));
-    console.log(await readdir$2(solutionDir));
     const _config = await readFile(path$1.join(solutionDir, 'pawtograder.yml'), 'utf8');
     const config = YAML.parse(_config);
     const grader = await makeGrader(config, solutionDir, submissionDir, regressionTestJob);
